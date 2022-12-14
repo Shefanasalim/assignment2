@@ -1,0 +1,395 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sn
+
+
+def read_data():
+	"""
+		Function to read the data using pandas.
+		return: the dataframe
+	"""
+	data = pd.read_csv(r'./API_19_DS2_en_csv_v2_4700503/data.csv')
+	meta_indicator = pd.read_csv(r'./API_19_DS2_en_csv_v2_4700503/meta_indicators.csv')
+	meta_countries = pd.read_csv(r'./API_19_DS2_en_csv_v2_4700503/meta_countries.csv')
+
+	return data, meta_indicator, meta_countries
+
+def country_years(data):
+	"""
+	    Function to read the data using pandas.
+	    return: DataFrame countries,years
+	"""
+	countries = pd.DataFrame(data['Country Name'].unique(), columns = ['Countries'])
+	years = pd.DataFrame(data.iloc[:1,4:].columns, columns = ['Years']).replace("u'", "'")
+	
+	return countries,years
+
+def urban_population(data):
+    """
+        Function to compare the annual population growth for US, UK, China, Australia and Brazil over the years '2008','2010','2012','2014','2016','2018'
+        return : Bar plot Urban population 
+    """
+
+    data = data.loc[data['Country Name'].isin(['United States','United Kingdom', 'China', 'Australia', 'Brazil'])]
+    data = data.loc[data['Indicator Code'] == 'SP.URB.TOTL']    # Filter by indicator code for Urban population
+    data = pd.DataFrame(data[['Country Name','2008','2010','2012','2014','2016','2018']]).reset_index(drop=True)	# Select required columns
+    
+    data = data.transpose()
+    
+    data_2008 = data.loc['2008']
+    data_2010 = data.loc['2010']
+    data_2012 = data.loc['2012']
+    data_2014 = data.loc['2014']
+    data_2016 = data.loc['2016']
+    data_2018 = data.loc['2018']
+    	
+    plotdata = pd.DataFrame({
+    
+    "2008":data_2008.values.tolist(),
+    "2010":data_2010.values.tolist(),
+    "2012":data_2012.values.tolist(),
+    "2014":data_2014.values.tolist(),
+    "2016":data_2016.values.tolist(),
+    "2018":data_2018.values.tolist()
+    },
+    
+    index=['Australia','brazil', 'china','United kingdom','United states',])
+    
+    plotdata.plot(kind="bar",figsize=(15, 8))
+    
+    plt.title("Urban Population Growth")
+    
+    plt.xlabel("Country Name (X - axis")
+    
+    plt.ylabel("Urban population (Y - axis)")
+    
+    plt.xticks(rotation = 20)    # Rotates X-Axis Ticks by 20-degrees
+    
+    plt.show()
+
+
+def co2_emission(data):
+    """
+        Function to compare the CO2 emission kt for US, UK, China, Austrlia , Brazil over te years '2008','2010','2012','2014','2016','2018'
+        return : Bar plot for CO2 intensity (kg per kg of oil equivalent energy use)
+    """
+
+    data = data.loc[data['Country Name'].isin(['United States','United Kingdom', 'China', 'Australia', 'Brazil'])]# Filter data by countries
+    data = data.loc[data['Indicator Code'] == 'EN.ATM.CO2E.EG.ZS']    # FIlter by indicator code for CO2 intensity (kg per kg of oil equivalent energy use)
+    data = pd.DataFrame(data[['Country Name','2008','2010','2012','2014','2016','2018']]).reset_index(drop=True)	# Select required columns
+
+    data = data.transpose()
+   
+    data_2008 = data.loc['2008']
+    data_2010 = data.loc['2010']
+    data_2012 = data.loc['2012']
+    data_2014 = data.loc['2014']
+    data_2016 = data.loc['2016']
+    data_2018 = data.loc['2018']
+   	
+    plotdata = pd.DataFrame({
+
+    "2008":data_2008.values.tolist(),
+    "2010":data_2010.values.tolist(),
+    "2012":data_2012.values.tolist(),
+    "2014":data_2014.values.tolist(),
+    "2016":data_2016.values.tolist(),
+    "2018":data_2018.values.tolist()
+    },
+
+        index=['Australia','Brazil','China','United kingdom','United states'])
+
+    plotdata.plot(kind="bar",figsize=(15, 8))
+       
+    plt.title("CO2 Emission")
+       
+    plt.xlabel("Country Name (X - axis)")
+       
+    plt.xticks(rotation = 20)    # Rotates X-Axis Ticks by 20-degrees
+    
+    plt.ylabel("CO2 intensity (kg per kg of oil equivalent energy use) (Y - axis)")
+    
+    plt.show()
+    
+    
+def methane_gas_emission(data):
+    """
+        Function to compare the Methane emissions (kt of CO2 equivalent) for US, UK, China, Australia, Brazil
+        return : Bar plot for Methane emissions (kt of CO2 equivalent)
+    """
+
+    data = data.loc[data['Country Name'].isin(['United States','United Kingdom', 'China', 'Australia', 'Brazil'])] # Filter data by country names
+    data = data.loc[data['Indicator Code'] == 'EN.ATM.METH.KT.CE']    # Filter data by country code for Methane emissions (kt of CO2 equivalent)
+    data = pd.DataFrame(data[['Country Name','2008','2010','2012','2014','2016','2018']]).reset_index(drop=True)	# Select required columns
+
+    data = data.transpose()
+
+    data_2008 = data.loc['2008']
+    data_2010 = data.loc['2010']
+    data_2012 = data.loc['2012']
+    data_2014 = data.loc['2014']
+    data_2016 = data.loc['2016']
+    data_2018 = data.loc['2018']
+	
+    plotdata = pd.DataFrame({
+
+    "2008":data_2008.values.tolist(),
+    "2010":data_2010.values.tolist(),
+    "2012":data_2012.values.tolist(),
+    "2014":data_2014.values.tolist(),
+    "2016":data_2016.values.tolist(),
+    "2018":data_2018.values.tolist()
+    },
+
+        index=['Australia','Brazil','China','United Kingdom','United States'])
+
+    plotdata.plot(kind="bar",figsize=(15, 8))
+
+    plt.title("Methane emissions (kt of CO2 equivalent)")
+
+    plt.xlabel("Country Name (X - axis)")
+
+    plt.xticks(rotation = 20)    # Rotates X-Axis Ticks by 20-degrees
+
+    plt.ylabel("Methane emissions (kt of CO2 equivalent) (Y - axis)")
+
+    plt.show()
+
+def electricity_production(data):
+	"""
+	    Function to compare the Electricity production from Coal sources (% of total) for US, UK, China, Brazil, Australia
+	    return : Line plot Electricity production from Coal sources (% of total) Vs Years
+	"""
+
+	plot_data = pd.DataFrame(columns=['Country Name','2008','2010','2012','2014'])
+
+	data = data.loc[data['Country Name'].isin(['United States','United Kingdom', 'China', 'Brazil', 'Australia'])]
+	data = data.loc[data['Indicator Code'] == 'EG.ELC.COAL.ZS']     # Filter data using indicator code for Electricity production from coal sources (% of total)
+	data = pd.DataFrame(data[['Country Name','2008','2010','2012','2014']])
+
+	us_data =  data.loc[data['Country Name'] == 'United States']
+	uk_data = data.loc[data['Country Name'] == 'United Kingdom']
+	china_data = data.loc[data['Country Name'] == 'China']
+	brazil_data = data.loc[data['Country Name'] == 'Brazil']
+	australia_data = data.loc[data['Country Name'] == 'Australia']
+
+	us_data = str(us_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")    # Preprocess the data
+	us_data = us_data.replace("]]", "")
+	us_data = [eval(i) for i in list(us_data.split(","))]
+	
+
+	uk_data = str(uk_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	uk_data = uk_data.replace("]]", "")
+	uk_data = [eval(i) for i in list(uk_data.split(","))]
+
+	china_data = str(china_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	china_data = china_data.replace("]]", "")
+	china_data = [eval(i) for i in list(china_data.split(","))]
+
+	brazil_data = str(brazil_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	brazil_data = brazil_data.replace("]]", "")
+	brazil_data = [eval(i) for i in list(brazil_data.split(","))]
+
+	australia_data = str(australia_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	australia_data = australia_data.replace("]]", "")
+	australia_data = [eval(i) for i in list(australia_data.split(","))]
+	
+	plotdata = pd.DataFrame({
+
+    "US":us_data,
+    "UK":uk_data,
+    "China":china_data,
+    "Brazil":brazil_data,
+    "Australia":australia_data
+  
+    },
+
+    index=['2008','2010','2012','2014'])
+
+	plotdata.plot(kind="line",figsize=(15, 8))
+
+	plt.title("Electricity production from Coal sources (% of total) Vs Years")
+
+	plt.xlabel("Years (X - axis)")
+
+	plt.xticks(rotation = 20)    # Rotates X-Axis Ticks by 20-degrees
+
+	plt.ylabel("Electricity production from coal sources (% of total) (Y - axis)")
+
+	plt.show()
+
+
+def no2_production(data):
+	"""
+	    Function to compare the Nitrous oxide emissions (thousand metric tons of CO2 equivalent) for US, UK, China, Bangladesh, Indonesia
+	    return : Line plot Nitrous oxide emissions (thousand metric tons of CO2 equivalent) Vs Years
+	"""
+
+	plot_data = pd.DataFrame(columns=['Country Name','2008','2010','2012','2014'])
+
+	data = data.loc[data['Country Name'].isin(['United States','United Kingdom', 'China', 'Brazil', 'Australia'])]
+	data = data.loc[data['Indicator Code'] == 'EN.ATM.NOXE.KT.CE']    # Filter data using indicator code for Nitrous oxide emissions (thousand metric tons of CO2 equivalent)
+	data = pd.DataFrame(data[['Country Name','2008','2010','2012','2014']])
+
+	us_data =  data.loc[data['Country Name'] == 'United States']
+	uk_data = data.loc[data['Country Name'] == 'United Kingdom']
+	china_data = data.loc[data['Country Name'] == 'China']
+	brazil_data = data.loc[data['Country Name'] == 'Brazil']
+	australia_data = data.loc[data['Country Name'] == 'Australia']
+
+	us_data = str(us_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")    # Preprocess the data
+	us_data = us_data.replace("]]", "")
+	us_data = [eval(i) for i in list(us_data.split(","))]
+	
+
+	uk_data = str(uk_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	uk_data = uk_data.replace("]]", "")
+	uk_data = [eval(i) for i in list(uk_data.split(","))]
+
+	china_data = str(china_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	china_data = china_data.replace("]]", "")
+	china_data = [eval(i) for i in list(china_data.split(","))]
+
+	brazil_data = str(brazil_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	brazil_data = brazil_data.replace("]]", "")
+	brazil_data = [eval(i) for i in list(brazil_data.split(","))]
+
+	australia_data = str(australia_data[['2008','2010','2012','2014']].values.tolist()).replace("[[", "")
+	australia_data = australia_data.replace("]]", "")
+	australia_data = [eval(i) for i in list(australia_data.split(","))]
+	
+	plotdata = pd.DataFrame({
+
+    "US":us_data,
+    "UK":uk_data,
+    "China":china_data,
+    "Brazil":brazil_data,
+    "Australia":australia_data
+  
+    },
+
+    index=['2008','2010','2012','2014'])
+
+	plotdata.plot(kind="line",figsize=(15, 8))
+
+	plt.title("Nitrous oxide emissions Vs Years")
+
+	plt.xlabel("Years (X - axis)")
+
+	plt.xticks(rotation = 20)    # Rotates X-Axis Ticks by 20-degrees
+
+	plt.ylabel(" Nitrous oxide emissions (thousand metric tons of CO2 equivalent) (Y - axis)")
+
+	plt.show()
+
+
+def agricultural_land(data):
+    """
+        Function to compare the Agricultural land (sq. km) Land for countries China, US, UK, Brazil, Australia
+        return : Line plot Agricultural land (sq. km) Land Vs Years
+    """
+
+    data = data.loc[data['Indicator Code'].isin(['AG.LND.AGRI.K2'])]    # Filter data with indicator code for Agricultural land (sq. km)	
+    china_land_data = data.loc[data['Country Name'] == 'China']    # Filter data for Country Name in China
+    china_land_data = pd.DataFrame(china_land_data[['Country Name','2008','2010','2012','2014','2016','2018','2020']])
+	
+
+    china_land_data = str(china_land_data[['2008','2010','2012','2014','2016','2018','2020']].values.tolist()).replace("[[", "")
+    china_land_data = china_land_data.replace("]]", "")
+    china_land_res = [eval(i) for i in list(china_land_data.split(","))]
+
+    us_land_data = data.loc[data['Country Name'] == 'United States']    # Filter data for Country Name in United States
+    us_land_data = pd.DataFrame(us_land_data[['Country Name','2008','2010','2012','2014','2016','2018','2020']])
+	
+    us_land_data = str(us_land_data[['2008','2010','2012','2014','2016','2018','2020']].values.tolist()).replace("[[", "")
+    us_land_data = us_land_data.replace("]]", "")
+    us_land_res = [eval(i) for i in list(us_land_data.split(","))]
+	
+    uk_land_data = data.loc[data['Country Name'] == 'United Kingdom']    # Filter data for Country Name in Unites Kingdom
+    uk_land_data = pd.DataFrame(uk_land_data[['Country Name','2008','2010','2012','2014','2016','2018','2020']])
+	
+    uk_land_data = str(uk_land_data[['2008','2010','2012','2014','2016','2018','2020']].values.tolist()).replace("[[", "")
+    uk_land_data = uk_land_data.replace("]]", "")
+    uk_land_res = [eval(i) for i in list(uk_land_data.split(","))]
+    
+    aus_land_data = data.loc[data['Country Name'] == 'Australia']    # Filter data for Country Name in Australia
+    aus_land_data = pd.DataFrame(aus_land_data[['Country Name','2008','2010','2012','2014','2016','2018','2020']])
+	
+    aus_land_data = str(aus_land_data[['2008','2010','2012','2014','2016','2018','2020']].values.tolist()).replace("[[", "")
+    aus_land_data = aus_land_data.replace("]]", "")
+    aus_land_res = [eval(i) for i in list(aus_land_data.split(","))]
+    
+    brazil_land_data = data.loc[data['Country Name'] == 'Brazil']    # Filter data for Country Name in Brazil
+    brazil_land_data = pd.DataFrame(brazil_land_data[['Country Name','2008','2010','2012','2014','2016','2018','2020']])
+	
+    brazil_land_data = str(brazil_land_data[['2008','2010','2012','2014','2016','2018','2020']].values.tolist()).replace("[[", "")
+    brazil_land_data = brazil_land_data.replace("]]", "")
+    brazil_land_res = [eval(i) for i in list(brazil_land_data.split(","))]
+    
+    plotdata = pd.DataFrame({
+        "china Arable Land":china_land_res,
+        "united kingdom arable Land":uk_land_res,
+        "united states arable Land":us_land_res,
+        "australia arable Land":aus_land_res,
+        "brazil arable Land":brazil_land_res
+    },
+
+    index=['2008','2010','2012','2014','2016','2018','2020'])
+    
+    plotdata.plot(kind="line",figsize=(15, 8))
+    
+    plt.title("Agricultural land (sq. km) Land")
+    
+    plt.xlabel("Years (X - axis)")
+    
+    plt.ylabel("Agricultural land (sq. km) Land (Y - axis)")
+    
+    plt.show()
+
+
+def heat_map(data):
+    """
+        Function to plot the heat map for the correlation matrix for specific indicators.
+        return : Heatmap for indicators Foreign direct investment, CO2 emissions, Electricity prod - oil sources, Forest area
+    """
+
+    data = data.loc[data['Country Name'].isin(['China'])]
+    gdp_data = data.loc[data['Indicator Code'].isin(['BX.KLT.DINV.WD.GD.ZS','EN.ATM.CO2E.PP.GD','EG.ELC.PETR.ZS','AG.LND.FRST.ZS'])]	# Foreign direct investment net inflows (% of GDP), Electricity production, Forest land, co2 emmission
+    gdp_data = pd.DataFrame(gdp_data[['Indicator Code','2008','2010','2012','2014']])
+    gdp_data = gdp_data.set_index('Indicator Code').transpose()
+    gdp_data.rename(columns = {'BX.KLT.DINV.WD.GD.ZS':'Foreign direct investment','EN.ATM.CO2E.PP.GD':'CO2 emissions','EG.ELC.PETR.ZS':'Electricity prod - oil sources','AG.LND.FRST.ZS':'Forest area'}, inplace = True)
+   
+    dataplot = sn.heatmap(gdp_data.corr(), cmap="YlGnBu", annot=True)    # plotting the heatmap
+    dataplot.set_xticklabels(dataplot.get_xticklabels(), rotation=10, horizontalalignment='right')
+    dataplot.set_yticklabels(dataplot.get_yticklabels(), rotation=60, horizontalalignment='right')
+	  
+    plt.show()    # displaying the plotted heatmap
+    
+
+# Calling function read_data to read the data
+data, meta_indicator, meta_countries = read_data()
+
+# Calling function country_years to get the countries and years
+countries, years = country_years(data)
+
+# Calling function urban_population_growth
+urban_population(data)
+
+# Calling function co2_emission
+co2_emission(data)
+
+# Calling function greenouse_gas_emission
+methane_gas_emission(data)
+
+# Calling function no2_production
+electricity_production(data)
+
+# Calling function electricity_production
+no2_production(data)
+
+# Calling function agricultural_land
+agricultural_land(data)
+
+# Calling function heat_map
+heat_map(data)
